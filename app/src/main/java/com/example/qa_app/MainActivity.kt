@@ -86,24 +86,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             question.answers.add(answer)
                         }
                     }
-
                     mAdapter.notifyDataSetChanged()
                 }
             }
         }
-
         override  fun onChildRemoved(p0: DataSnapshot) {
-
         }
-
         override fun onChildMoved(p0: DataSnapshot, p1: String?){
-
         }
         override fun onCancelled(p0: DatabaseError){
-
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -211,7 +204,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mGenreRef = mDatabaseReference.child(ContentsPATH).child(mGenre.toString())
         mGenreRef!!.addChildEventListener(mEventListener)
 
-
-    return true
+        return true
 }
 }

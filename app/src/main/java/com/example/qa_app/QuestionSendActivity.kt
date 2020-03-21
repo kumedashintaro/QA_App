@@ -123,6 +123,7 @@ class QuestionSendActivity : AppCompatActivity(), View.OnClickListener, Database
         //UID
         data["uid"] = FirebaseAuth.getInstance().currentUser!!.uid
 
+
         //タイトルと本文を取得する
         val title = titleText.text.toString()
         val body = bodyText.text.toString()

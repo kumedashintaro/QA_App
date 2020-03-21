@@ -1,19 +1,26 @@
 package com.example.qa_app
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_question_detail.*
+import kotlinx.android.synthetic.main.activity_question_detail.listView
+import kotlinx.android.synthetic.main.content_main.*
 
 import java.util.HashMap
 
 class QuestionDetailActivity : AppCompatActivity() {
 
+    private lateinit var mAuth: FirebaseAuth
+
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
+    private lateinit var mDataBaseReference: DatabaseReference
 
     private val mEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -49,9 +56,49 @@ class QuestionDetailActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_detail)
+
+
+        //ログインしていれば、お気に入り表示
+        val user = FirebaseAuth.getInstance().currentUser
+
+        if (user == null) {
+
+            fab2.visibility = View.INVISIBLE
+
+        } else {
+            fab2.visibility = View.VISIBLE
+        }
+
+        mDataBaseReference = FirebaseDatabase.getInstance().reference
+
+
+        //お気に入りが押された時　
+        var flag = true
+        fab2.setOnClickListener {
+
+            flag = if(flag){
+                fab2.setImageResource(R.drawable.ic_star_on)
+                false
+
+                val dataBaseReference = FirebaseDatabase.getInstance().reference
+                val favoriteRef = dataBaseReference.child(FavoritePath).child(user!!.uid).child("AAA")
+
+                val data = HashMap<String, String>()
+
+                data["value"] = true.toString()
+
+                favoriteRef.setValue(data)
+
+            }else{
+                fab2.setImageResource(R.drawable.ic_star_off)
+                true
+            }
+
+        }
 
         // 渡ってきたQuestionのオブジェクトを保持する
         val extras = intent.extras
