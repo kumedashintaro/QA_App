@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -61,6 +62,8 @@ class QuestionDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_detail)
 
+        mDataBaseReference = FirebaseDatabase.getInstance().reference
+
 
         //ログインしていれば、お気に入り表示
         val user = FirebaseAuth.getInstance().currentUser
@@ -71,31 +74,48 @@ class QuestionDetailActivity : AppCompatActivity() {
 
         } else {
             fab2.visibility = View.VISIBLE
+
         }
 
-        mDataBaseReference = FirebaseDatabase.getInstance().reference
+        //質問IDを取得する
+
+        val mdataBaseReference = FirebaseDatabase.getInstance().reference
+        val favoriteRef = mdataBaseReference.child(FavoritePath).child(user!!.uid).child(mQuestion.questionUid)
+
+        favoriteRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val data = snapshot.value as Map<*, *>?
+                saveName(data!!["name"] as String)
+            }
+        })
+
+
+        //質問ID取得の有無でお気に入りしているか表示
+
+        if (favorites != null){
+
+            fab2.setImageResource(R.drawable.ic_star_on)
+        }
+
+
+
 
 
         //お気に入りが押された時　
         var flag = true
         fab2.setOnClickListener {
 
-            flag = if(flag){
+            if(flag){
                 fab2.setImageResource(R.drawable.ic_star_on)
-                false
-
                 val dataBaseReference = FirebaseDatabase.getInstance().reference
-                val favoriteRef = dataBaseReference.child(FavoritePath).child(user!!.uid).child("AAA")
-
+                val favoriteRef = dataBaseReference.child(FavoritePath).child(user!!.uid).child(mQuestion.questionUid)
                 val data = HashMap<String, String>()
-
                 data["value"] = true.toString()
-
                 favoriteRef.setValue(data)
-
+                flag = false
             }else{
                 fab2.setImageResource(R.drawable.ic_star_off)
-                true
+                flag = true
             }
 
         }
