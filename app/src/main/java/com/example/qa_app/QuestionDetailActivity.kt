@@ -16,12 +16,15 @@ import java.util.HashMap
 
 class QuestionDetailActivity : AppCompatActivity() {
 
-    private lateinit var mAuth: FirebaseAuth
+
 
     private lateinit var mQuestion: Question
     private lateinit var mAdapter: QuestionDetailListAdapter
     private lateinit var mAnswerRef: DatabaseReference
     private lateinit var mDataBaseReference: DatabaseReference
+
+    var favorites = toString()
+    var flag = true
 
     private val mEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -55,6 +58,11 @@ class QuestionDetailActivity : AppCompatActivity() {
 
         override fun onCancelled(databaseError: DatabaseError) {
         }
+
+
+
+
+
     }
 
     @SuppressLint("RestrictedApi")
@@ -80,29 +88,31 @@ class QuestionDetailActivity : AppCompatActivity() {
         //質問IDを取得する
 
         val mdataBaseReference = FirebaseDatabase.getInstance().reference
-        val favoriteRef = mdataBaseReference.child(FavoritePath).child(user!!.uid).child(mQuestion.questionUid)
+        val favoriteRef = mdataBaseReference.child(FavoritePath).child(user!!.uid).child(mQuestion.questionUid).child(mQuestion.questionUid)
 
         favoriteRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val data = snapshot.value as Map<*, *>?
-                saveName(data!!["name"] as String)
+                favorites=(data!!["value"] as String)
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
             }
         })
-
 
         //質問ID取得の有無でお気に入りしているか表示
 
         if (favorites != null){
 
             fab2.setImageResource(R.drawable.ic_star_on)
+            flag = false
+
+        }else{
+            flag = true
         }
 
 
-
-
-
         //お気に入りが押された時　
-        var flag = true
+
         fab2.setOnClickListener {
 
             if(flag){
