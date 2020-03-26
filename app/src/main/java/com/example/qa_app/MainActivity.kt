@@ -30,8 +30,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mListView: ListView
     private lateinit var mQuestionArrayList: ArrayList<Question>
     private lateinit var mAdapter: QuestionsListAdapter
+    private lateinit var mQuestion: Question
 
     private var mGenreRef: DatabaseReference? = null
+    private var mFavoriteRef: DatabaseReference? = null
 
     private val mEventListener = object  : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -104,6 +106,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mToolbar = findViewById(R.id.toolbar)
         setSupportActionBar(mToolbar)
 
+
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {  view ->
             //ジャンルを選択していない場合(mGenre == 0)はエラーを表示するだけ
@@ -172,6 +175,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onOptionsItemSelected(item)
     }
 
+    val user = FirebaseAuth.getInstance().currentUser
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
@@ -187,7 +192,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }else if (id == R.id.nav_compter) {
             mToolbar.title ="コンピューター"
             mGenre = 4
-    }
+        }else if (id == R.id.nav_favorite) {
+            val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
+        }
 
     val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
     drawer.closeDrawer(GravityCompat.START)
@@ -206,4 +214,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return true
 }
+
 }
