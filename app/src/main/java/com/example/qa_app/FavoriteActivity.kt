@@ -41,8 +41,7 @@ class FavoriteActivity : AppCompatActivity() {
             val GenreID = map["GenreID"]?:""
             val QuestionID = map["QuestionID"]?:""
 
-
-            //Firebaseにデータの確認をする処理を書く。
+            //Firebaseにデータの確認をする処理を書く
 
             val userRef = mDatabaseReference.child(ContentsPATH).child(GenreID.toString()).child(QuestionID.toString())
 
