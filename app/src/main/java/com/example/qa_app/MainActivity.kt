@@ -14,11 +14,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Base64
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_question_detail.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -33,10 +36,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mQuestion: Question
 
     private var mGenreRef: DatabaseReference? = null
-    private var mFavoriteRef: DatabaseReference? = null
+
+
 
     private val mEventListener = object  : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+
+
             val map =dataSnapshot.value as Map<String, String>
             val title = map["title"] ?: ""
             val body = map["body"] ?: ""
@@ -67,6 +73,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mGenre, bytes, answerArrayList)
             mQuestionArrayList.add(question)
             mAdapter.notifyDataSetChanged()
+
+
         }
 
         override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
@@ -105,6 +113,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         mToolbar = findViewById(R.id.toolbar)
         setSupportActionBar(mToolbar)
+        val user = FirebaseAuth.getInstance().currentUser
 
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -178,6 +187,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val user = FirebaseAuth.getInstance().currentUser
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+
+            val navigationView:NavigationView = findViewById(R.id.nav_view) as NavigationView
+            val menuNav:Menu = navigationView.getMenu()
+            val favoriteItem:MenuItem = menuNav.findItem(R.id.nav_favorite)
+
+            favoriteItem?.isVisible = false
+            return true
+        }
+
         val id = item.itemId
 
         if (id == R.id.nav_hobby) {
@@ -214,5 +235,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return true
 }
-
 }
