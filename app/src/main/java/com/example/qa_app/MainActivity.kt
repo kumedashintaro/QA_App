@@ -164,6 +164,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             intent.putExtra("question", mQuestionArrayList[position])
             startActivity(intent)
         }
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -186,7 +188,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     val user = FirebaseAuth.getInstance().currentUser
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+    override fun onResume(){
+        super.onResume()
 
         val user = FirebaseAuth.getInstance().currentUser
         if (user == null) {
@@ -196,8 +199,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val favoriteItem:MenuItem = menuNav.findItem(R.id.nav_favorite)
 
             favoriteItem?.isVisible = false
-            return true
+        }else{
+
+            val navigationView:NavigationView = findViewById(R.id.nav_view) as NavigationView
+            val menuNav:Menu = navigationView.getMenu()
+            val favoriteItem:MenuItem = menuNav.findItem(R.id.nav_favorite)
+            favoriteItem?.isVisible = true
         }
+
+    }
+
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+
 
         val id = item.itemId
 

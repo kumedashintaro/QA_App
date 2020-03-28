@@ -38,8 +38,8 @@ class FavoriteActivity : AppCompatActivity() {
 
 
             val map = dataSnapshot.value as Map<String, String>
-            val GenreID = map["GenreID"]?:""
-            val QuestionID = map["QuestionID"]?:""
+            val GenreID = map["value"]?:""
+            val QuestionID = dataSnapshot.key
 
             //Firebaseにデータの確認をする処理を書く
 
@@ -49,7 +49,7 @@ class FavoriteActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
                     //質問の情報を取得する。
-                    val map = dataSnapshot.value as Map<String, String>
+                    val map = snapshot.value as Map<String, String>
                     val title = map["title"] ?: ""
                     val body = map["body"] ?: ""
                     val name = map["name"] ?: ""
